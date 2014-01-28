@@ -1,7 +1,9 @@
 gopts
 =====
 
-Helper for defining configurable options for your structs
+Helper for defining configurable options for your structs.
+
+This package was inspired by http://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
 
 Documentation: [![GoDoc](https://godoc.org/github.com/xsleonard/gopts?status.png)](http://godoc.org/github.com/xsleonard/gopts)
 
