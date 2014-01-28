@@ -15,18 +15,15 @@ import "gopts"
 var (
     Port = gopts.Option("Config.Port", uint16(7777))
     Network = gopts.Option("Network", "tcp")
-    // ...
 )
 
 type ServerConfig struct {
     Port uint16
-    // ...
 }
 
 type Server struct {
     Network string
     Config ServerConfig
-    // ...
 }
 
 func NewServer(opts ...gopts.OptSetter) *Server {
