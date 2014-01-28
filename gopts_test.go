@@ -11,9 +11,9 @@ func ExampleOptions() {
         uint16(8888),
     }
     fmt.Printf("%d\n", e.Port)
-    SetOptions(e, port())
+    Set(e, port())
     fmt.Printf("%d\n", e.Port)
-    SetOptions(e, port(uint16(6666)))
+    Set(e, port(uint16(6666)))
     fmt.Printf("%d\n", e.Port)
     // Output:
     // 8888
@@ -29,9 +29,9 @@ func ExampleNestedOptions() {
         },
     }
     fmt.Printf("%d\n", e.Config.Port)
-    SetOptions(e, port())
+    Set(e, port())
     fmt.Printf("%d\n", e.Config.Port)
-    SetOptions(e, port(uint16(6666)))
+    Set(e, port(uint16(6666)))
     fmt.Printf("%d\n", e.Config.Port)
     // Output:
     // 8888
@@ -47,9 +47,9 @@ func ExampleNestedOptionsWithPointer() {
         },
     }
     fmt.Printf("%d\n", e.Config.Port)
-    SetOptions(e, port())
+    Set(e, port())
     fmt.Printf("%d\n", e.Config.Port)
-    SetOptions(e, port(uint16(6666)))
+    Set(e, port(uint16(6666)))
     fmt.Printf("%d\n", e.Config.Port)
     // Output:
     // 8888
@@ -77,13 +77,13 @@ type Server struct {
 func NewServer(opts ...OptSetter) *Server {
     s := &Server{}
     // set defaults
-    SetOptions(s, Port(), Network())
+    Set(s, Port(), Network())
     // override defaults with user's values
-    SetOptions(s, opts...)
+    Set(s, opts...)
     return s
 }
 
-func TestSetOptions(t *testing.T) {
+func TestSet(t *testing.T) {
     s := NewServer(Network("udp"))
     // s.Config.Port == 7777
     // s.Network == "udp"
@@ -95,7 +95,7 @@ func TestSetOptions(t *testing.T) {
     }
 
     // Set multiple options
-    prevOpts := SetOptions(s, Port(uint16(6666)), Network("tcp"))
+    prevOpts := Set(s, Port(uint16(6666)), Network("tcp"))
     // s.Config.Port == 6666
     // s.Network == "tcp"
 
@@ -109,26 +109,24 @@ func TestSetOptions(t *testing.T) {
         t.Fail()
     }
 
-    // Sets a single option
-    prevPort := SetOption(s, prevOpts[0])
-    // s.Config.Port == 7777, back to default
+    // Reset to the previous value. These two statements are equivalent.
+    prevPort := Set(s, prevOpts...)[0]
+    // s.Config.Port == 7777
     if s.Config.Port != 7777 {
         t.Fail()
     }
-
-    // Reset to the previous value. These two statements are equivalent.
-    SetOption(s, prevPort)
-    // s.Config.Port == 6666
-    if s.Config.Port != 6666 {
+    if s.Network != "udp" {
         t.Fail()
     }
+
+    // Setting a single value
     prevPort(s)
     // s.Config.Port == 6666
     if s.Config.Port != 6666 {
         t.Fail()
     }
 
-    // Another example of avoid SetOption
+    // Another example for setting a single value
     Network("udp")(s)
     if s.Network != "udp" {
         t.Fail()

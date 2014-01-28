@@ -11,8 +11,8 @@ Documentation: [![GoDoc](https://godoc.org/github.com/xsleonard/gopts?status.png
 import "gopts"
 
 var (
-    Port = gopts.Opt("Config.Port", uint16(7777))
-    Network = gopts.Opt("Network", "tcp")
+    Port = gopts.Option("Config.Port", uint16(7777))
+    Network = gopts.Option("Network", "tcp")
     // ...
 )
 
@@ -30,9 +30,9 @@ type Server struct {
 func NewServer(opts ...gopts.OptSetter) *Server {
     s := &Server{}
     // set defaults
-    gopts.SetOptions(Port(), Network())
+    gopts.Set(s, Port(), Network())
     // override defaults with user's values
-    gopts.SetOptions(opts...)
+    gopts.Set(s, opts...)
     return s
 }
 
@@ -42,17 +42,17 @@ func updateServer() {
     // s.Network == "udp"
 
     // Set multiple options
-    prevOpts := gopts.SetOptions(s, Port(uint16(6666)), Network("tcp"))
+    prevOpts := gopts.Set(s, Port(uint16(6666)), Network("tcp"))
     // s.Config.Port == 6666
     // s.Network == "tcp"
 
-    // Sets a single option
-    prevPort := gopts.SetOption(s, prevOpts[0])
-    // s.Config.Port == 7777, back to default
+    // Reset to the previous values. These two statements are equivalent.
+    prevOpts = gopts.Set(s, prevOpts...)
+    // s.Config.Port == 7777
+    // s.Config.Network == "udp"
 
-    // Reset to the previous value. These two statements are equivalent.
-    gopts.SetOption(s, prevPort)
-    prevPort(s)
+    // Shorthand for setting a single option:
+    prevOpts[0](s)
     // s.Config.Port == 6666
 }
 ```
