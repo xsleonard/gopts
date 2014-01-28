@@ -1,7 +1,9 @@
 gopts
 =====
 
-Helper for defining configurable options for your structs.
+[![Build Status](https://drone.io/github.com/xsleonard/gopts/status.png)](https://drone.io/github.com/xsleonard/gopts/latest)
+
+Self-referential struct configuration.
 
 This package was inspired by http://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
 
